@@ -1,4 +1,7 @@
 using Joygame.Joystore.API.Contexts;
+using Joygame.Joystore.API.Security;
+using Joygame.Joystore.API.Services.Implementation;
+using Joygame.Joystore.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -35,6 +38,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 #endregion
+
+#region Services DI Container
+builder.Services.AddScoped<ITokenProvider, TokenProvider>();
+#endregion
+
 
 var app = builder.Build();
 
