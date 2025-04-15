@@ -1,0 +1,6 @@
+@Joygame.Joystore.API_HostAddress = http://localhost:5007
+
+GET {{Joygame.Joystore.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
