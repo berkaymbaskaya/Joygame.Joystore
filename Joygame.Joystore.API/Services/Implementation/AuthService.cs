@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace Joygame.Joystore.API.Services.Implementation
 {
-    public class AuthService: IAuthService
+    public class AuthService : IAuthService
     {
         private readonly ApplicationDbContext _context;
         private readonly ITokenProvider _tokenProvider;
@@ -23,18 +23,22 @@ namespace Joygame.Joystore.API.Services.Implementation
                 .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
                 .FirstOrDefault(u => u.Username == username && u.PasswordHash == password);
-            
-            if (user == null)
-                return null;
 
-            var claims = new[]
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException("Invalid username or password.");
+            }
+
+            var claims = new List<Claim>
             {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Username),
             new Claim("Email", user.Email ?? "")
             };
+            claims.AddRange(user.UserRoles.Select(ur => new Claim(ClaimTypes.Role, ur.Role.Name)));
 
             var tokenDto = _tokenProvider.GenerateToken(claims);
+
             var userDto = new UserDto
             {
                 UserName = user.Username,
@@ -45,8 +49,8 @@ namespace Joygame.Joystore.API.Services.Implementation
 
             return new LoginResponseDto
             {
-                Token= tokenDto,
-                User= userDto
+                Token = tokenDto,
+                User = userDto
             };
         }
     }
