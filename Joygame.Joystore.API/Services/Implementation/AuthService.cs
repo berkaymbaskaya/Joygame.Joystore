@@ -1,4 +1,6 @@
 ﻿using Joygame.Joystore.API.Contexts;
+using Joygame.Joystore.API.Exceptions;
+using Joygame.Joystore.API.Extensions;
 using Joygame.Joystore.API.Models.Login;
 using Joygame.Joystore.API.Security;
 using Joygame.Joystore.API.Services.Interfaces;
@@ -22,11 +24,18 @@ namespace Joygame.Joystore.API.Services.Implementation
             var user = _context.Users
                 .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
-                .FirstOrDefault(u => u.Username == username && u.PasswordHash == password);
+                .FirstOrDefault(u => u.Username == username);
 
             if (user == null)
             {
-                throw new UnauthorizedAccessException("Invalid username or password.");
+                throw new AppExceptions.UserNotFoundException("Invalid username or password.");
+            }
+
+            var verify = PasswordHasher.Verify(password, user.PasswordHash);
+
+            if (!verify)
+            {
+                throw new AppExceptions.InvalidCredentialException("Invalid username or password.");
             }
 
             var claims = new List<Claim>
