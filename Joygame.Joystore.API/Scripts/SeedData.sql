@@ -16,7 +16,7 @@ GO
 -- USERS
 INSERT INTO Users (Username, PasswordHash, Email, CreatedUser)
 VALUES 
-('berkay', 'hashed-password123', 'berkay@joygame.com', NULL);
+('berkay', '$2a$11$Bf2oxcGfdiCaacBbB0EfVercdsz6CCk4klo0R4V0OrHR3Q4.fg3wS', 'berkay@joygame.com', NULL);
 GO
 
 -- ROLE ASSIGNMENTS

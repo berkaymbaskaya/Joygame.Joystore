@@ -1,4 +1,6 @@
-﻿using Joygame.Joystore.API.Models.Login;
+﻿using Joygame.Joystore.API.Exceptions;
+using Joygame.Joystore.API.Extensions;
+using Joygame.Joystore.API.Models.Login;
 using Joygame.Joystore.API.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
@@ -27,10 +29,12 @@ namespace Joygame.Joystore.API.Controllers
         {
             try
             {
+                var passw = PasswordHasher.HashPassword(request.Password);
+
                 var result = _authService.Login(request.Username, request.Password);
                 return Ok(result);
             }
-            catch (UnauthorizedAccessException ex)
+            catch (BaseException ex)
             {
                 return Unauthorized(ex.Message);
             }
