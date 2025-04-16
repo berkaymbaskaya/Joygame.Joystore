@@ -1,6 +1,8 @@
 ﻿using Joygame.Joystore.API.Contexts;
+using Joygame.Joystore.API.Entities;
 using Joygame.Joystore.API.Exceptions;
 using Joygame.Joystore.API.Extensions;
+using Joygame.Joystore.API.Models.ForgotPassword;
 using Joygame.Joystore.API.Models.Login;
 using Joygame.Joystore.API.Security;
 using Joygame.Joystore.API.Services.Interfaces;
@@ -13,11 +15,13 @@ namespace Joygame.Joystore.API.Services.Implementation
     {
         private readonly ApplicationDbContext _context;
         private readonly ITokenProvider _tokenProvider;
+        private readonly ILogger<AuthService> _logger;
 
-        public AuthService(ApplicationDbContext context, ITokenProvider tokenProvider)
+        public AuthService(ApplicationDbContext context, ITokenProvider tokenProvider, ILogger<AuthService> logger)
         {
             _context = context;
             _tokenProvider = tokenProvider;
+            _logger = logger;
         }
         public LoginResponseDto Login(string username, string password)
         {
@@ -61,6 +65,42 @@ namespace Joygame.Joystore.API.Services.Implementation
                 Token = tokenDto,
                 User = userDto
             };
+        }
+
+        public async Task ForgotPassword(ForgotPasswordRequestDto request)
+        {
+            try
+            {
+                var user = _context.Users.FirstOrDefault(u => u.Email == request.Email);
+
+                if (user == null)
+                {
+                    throw new AppExceptions.UserNotFoundException("User not found.");
+                }
+
+                var token = Guid.NewGuid().ToString("N");
+
+                var resetToken = new PasswordResetToken
+                {
+                    UserId = user.Id,
+                    Token = token,
+                    ExpiresAt = DateTime.UtcNow.AddHours(1),
+                    CreatedAt = DateTime.UtcNow,
+                    IsUsed = false,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedUser = user.Id
+                };
+
+                _context.PasswordResetTokens.Add(resetToken);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation($"Forgot Password Token Created for email:{request.Email} ");
+            }
+            catch
+            {
+                throw;
+            }
+     
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Joygame.Joystore.API.Exceptions;
 using Joygame.Joystore.API.Extensions;
+using Joygame.Joystore.API.Models.ForgotPassword;
 using Joygame.Joystore.API.Models.Login;
 using Joygame.Joystore.API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +28,7 @@ namespace Joygame.Joystore.API.Controllers
             return Ok();
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequestDto request)
         {
@@ -45,6 +48,28 @@ namespace Joygame.Joystore.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, ex.Message, request.Username);
+                return StatusCode(500, "An unexpected error occurred on the server.");
+            }
+
+        }
+
+        [AllowAnonymous]
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDto request)
+        {
+            try
+            {
+                await _authService.ForgotPassword(request);
+                return Ok();
+            }
+            catch (BaseException ex)
+            {
+                _logger.LogWarning($"Forgot Password Attempt failed on email:{request.Email} ");
+                return Unauthorized(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, ex.Message, request.Email);
                 return StatusCode(500, "An unexpected error occurred on the server.");
             }
 
