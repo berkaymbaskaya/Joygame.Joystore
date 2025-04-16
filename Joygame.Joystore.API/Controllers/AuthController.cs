@@ -91,12 +91,32 @@ namespace Joygame.Joystore.API.Controllers
             catch (BaseException ex)
             {
                 _logger.LogWarning($"Forgot Password Attempt failed on email:{request.Email} ");
-                return Unauthorized(ex.Message);
+                var response = new ApiResponse<string>
+                {
+                    Data = null,
+                    Success = false,
+                    Error = new Error
+                    {
+                        Message = ex.Message,
+                        Code = "401",
+                    }
+                };
+                return Unauthorized(response);
             }
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, ex.Message, request.Email);
-                return StatusCode(500, "An unexpected error occurred on the server.");
+                var response = new ApiResponse<string>
+                {
+                    Data = null,
+                    Success = false,
+                    Error = new Error
+                    {
+                        Message = "An unexpected error occurred on the server.",
+                        Code = "500",
+                    }
+                };
+                return StatusCode(500, response);
             }
 
         }
