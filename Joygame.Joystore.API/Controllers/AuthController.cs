@@ -1,4 +1,5 @@
-﻿using Joygame.Joystore.API.Exceptions;
+﻿using Joygame.Joystore.API.Core;
+using Joygame.Joystore.API.Exceptions;
 using Joygame.Joystore.API.Extensions;
 using Joygame.Joystore.API.Models.ForgotPassword;
 using Joygame.Joystore.API.Models.Login;
@@ -38,17 +39,42 @@ namespace Joygame.Joystore.API.Controllers
 
                 var result = _authService.Login(request.Username, request.Password);
                 _logger.LogInformation($"{request.Username} Logged in", request.Username);
-                return Ok(result);
+                var response = new ApiResponse<LoginResponseDto>
+                {
+                    Data = result,
+                    Success = true
+                };
+                return Ok(response);
             }
             catch (BaseException ex)
             {
                 _logger.LogWarning(ex, "Login failed for user {Username}", request.Username);
-                return Unauthorized(ex.Message);
+                var response = new ApiResponse<string>
+                {
+                    Data = null,
+                    Success = false,
+                    Error= new Error
+                    {
+                        Message = ex.Message,
+                        Code = "401",
+                    }
+                };
+                return Unauthorized(response);
             }
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, ex.Message, request.Username);
-                return StatusCode(500, "An unexpected error occurred on the server.");
+                var response = new ApiResponse<string>
+                {
+                    Data = null,
+                    Success = false,
+                    Error = new Error
+                    {
+                        Message ="\"An unexpected error occurred on the server",
+                        Code = "500",
+                    }
+                };
+                return StatusCode(500, response);
             }
 
         }
