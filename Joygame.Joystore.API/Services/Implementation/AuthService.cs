@@ -4,6 +4,7 @@ using Joygame.Joystore.API.Exceptions;
 using Joygame.Joystore.API.Extensions;
 using Joygame.Joystore.API.Models.ForgotPassword;
 using Joygame.Joystore.API.Models.Login;
+using Joygame.Joystore.API.Models.ResetPassword;
 using Joygame.Joystore.API.Security;
 using Joygame.Joystore.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -100,7 +101,50 @@ namespace Joygame.Joystore.API.Services.Implementation
             {
                 throw;
             }
-     
         }
+
+        public async Task ResetPasswordAsync(ResetPasswordRequestDto request)
+        {
+            try
+            {
+                var resetToken = _context.PasswordResetTokens
+                        .FirstOrDefault(t =>
+                            t.Token == request.Token &&
+                            t.IsUsed == false &&
+                            t.IsDeleted == false &&
+                            t.IsActive == true &&
+                            t.ExpiresAt > DateTime.UtcNow);
+
+                if (resetToken == null)
+                {
+                    _logger.LogWarning($"Password reset failed (Invalid or expired token)");
+                    throw new AppExceptions.InvalidTokenException("Invalid or expired token.");
+                }
+
+                var user = _context.Users.FirstOrDefault(u => u.Id == resetToken.UserId);
+
+                if (user == null)
+                {
+                    _logger.LogWarning($"Password reset failed (User not found)");
+                    throw new AppExceptions.UserNotFoundException("User not found.");
+                }
+
+                user.PasswordHash = PasswordHasher.HashPassword(request.NewPassword);
+                user.UpdatedAt = DateTime.UtcNow;
+
+                resetToken.IsUsed = true;
+                resetToken.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation($"Password successfully reset for UserId: {user.Id}");
+            }
+            catch
+            {
+                throw;
+            }
+    
+        }
+
     }
 }

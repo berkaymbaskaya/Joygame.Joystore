@@ -20,5 +20,15 @@
             {
             }
         }
+
+        public class InvalidTokenException : BaseException
+        {
+            public InvalidTokenException() { }
+
+            public InvalidTokenException(string message)
+                : base(message)
+            {
+            }
+        }
     }
 }
