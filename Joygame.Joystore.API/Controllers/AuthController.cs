@@ -13,10 +13,12 @@ namespace Joygame.Joystore.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, ILogger<AuthController> logger)
         {
             _authService = authService;
+            _logger = logger;
         }
         [HttpGet]
         public IActionResult Get()
@@ -32,14 +34,17 @@ namespace Joygame.Joystore.API.Controllers
                 var passw = PasswordHasher.HashPassword(request.Password);
 
                 var result = _authService.Login(request.Username, request.Password);
+                _logger.LogInformation($"{request.Username} Logged in", request.Username);
                 return Ok(result);
             }
             catch (BaseException ex)
             {
+                _logger.LogWarning(ex, "Login failed for user {Username}", request.Username);
                 return Unauthorized(ex.Message);
             }
             catch (Exception ex)
             {
+                _logger.LogWarning(ex, ex.Message, request.Username);
                 return StatusCode(500, "An unexpected error occurred on the server.");
             }
 
