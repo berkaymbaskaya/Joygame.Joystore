@@ -1,0 +1,13 @@
+﻿CREATE TABLE PasswordResetTokens (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    UserId INT NOT NULL,
+    Token NVARCHAR(100) NOT NULL,
+    ExpiresAt DATETIME NOT NULL,
+    IsUsed BIT DEFAULT 0,
+    IsActive BIT DEFAULT 1,
+    IsDeleted BIT DEFAULT 0,
+    DeletedAt DATETIME NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETUTCDATE(),
+    UpdatedAt DATETIME NULL,
+    CreatedUser INT NULL
+);
