@@ -48,8 +48,7 @@ namespace Joygame.Joystore.API.Services.Implementation
                     CategoryName = reader.GetString(4),
                     ParentCategoryName = reader.IsDBNull(5) ? null : reader.GetString(5),
                     Price = reader.GetDecimal(6),
-                    Description = reader.IsDBNull(7) ? null : reader.GetString(7),
-                    ImageUrl = reader.IsDBNull(8) ? null : reader.GetString(8)
+                    ImageUrl = reader.IsDBNull(7) ? null : reader.GetString(7)
                 });
             }
 
