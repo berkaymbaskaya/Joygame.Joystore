@@ -39,125 +39,27 @@ namespace Joygame.Joystore.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id,[FromBody] ProductUpdateDto req)
         {
-            try
-            {
-                await _productService.UpdateProduct(id,req);
-                return NoContent();
-            }
-            catch(BaseException ex)
-            {
-                _logger.LogWarning(ex, "Error on UpdateProduct");
-                var response = new ApiResponse<string>
-                {
-                    Data = null,
-                    Success = false,
-                    Error = new Error
-                    {
-                        Message = ex.Message,
-                        Code = "400"
-                    }
-                };
-                return BadRequest(response);
-            }
-            catch (Exception ex) {
-                _logger.LogError(ex, "Error on UpdateProduct");
-                var response = new ApiResponse<string>
-                {
-                    Data = null,
-                    Success = false,
-                    Error = new Error
-                    {
-                        Message = "An error occurred while UpdateProduct.",
-                        Code = "500"
-                    }
-                };
-                return StatusCode(StatusCodes.Status500InternalServerError, response);
-            }
+            await _productService.UpdateProduct(id, req);
+            return NoContent();
         }
 
         [HttpPost()]
         public async Task<IActionResult> CreateProduct([FromBody] ProductCreateDto req)
         {
-            try
+            var result = await _productService.CreateProduct(req);
+            var response = new ApiResponse<int>
             {
-                var result = await _productService.CreateProduct(req);
-                var response = new ApiResponse<int>
-                {
-                    Data = result,
-                    Success = true
-                };
-                return Ok(response);
-            }
-            catch (BaseException ex)
-            {
-                _logger.LogWarning(ex, "Error on UpdateProduct");
-                var response = new ApiResponse<string>
-                {
-                    Data = null,
-                    Success = false,
-                    Error = new Error
-                    {
-                        Message = ex.Message,
-                        Code = "400"
-                    }
-                };
-                return BadRequest(response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error on UpdateProduct");
-                var response = new ApiResponse<string>
-                {
-                    Data = null,
-                    Success = false,
-                    Error = new Error
-                    {
-                        Message = "An error occurred while UpdateProduct.",
-                        Code = "500"
-                    }
-                };
-                return StatusCode(StatusCodes.Status500InternalServerError, response);
-            }
+                Data = result,
+                Success = true
+            };
+            return Ok(response);
         }
         
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            try
-            {
-                await _productService.DeleteProduct(id);
-                return NoContent();
-            }
-            catch (BaseException ex)
-            {
-                _logger.LogWarning(ex, "Error on UpdateProduct");
-                var response = new ApiResponse<string>
-                {
-                    Data = null,
-                    Success = false,
-                    Error = new Error
-                    {
-                        Message = ex.Message,
-                        Code = "400"
-                    }
-                };
-                return BadRequest(response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error on UpdateProduct");
-                var response = new ApiResponse<string>
-                {
-                    Data = null,
-                    Success = false,
-                    Error = new Error
-                    {
-                        Message = "An error occurred while UpdateProduct.",
-                        Code = "500"
-                    }
-                };
-                return StatusCode(StatusCodes.Status500InternalServerError, response);
-            }
+            await _productService.DeleteProduct(id);
+            return NoContent();
         }
 
 

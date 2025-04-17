@@ -21,31 +21,13 @@ namespace Joygame.Joystore.API.Controllers
         [HttpGet("categories")]
         public IActionResult GetCategories()
         {
-            try
+            var categories = _categoryService.GetCategories();
+            var response = new ApiResponse<List<CategoryDto>>
             {
-                var categories = _categoryService.GetCategories();
-                var response = new ApiResponse<List<CategoryDto>>
-                {
-                    Data = categories,
-                    Success = true
-                };
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving categories");
-                var response = new ApiResponse<string>
-                {
-                    Data = null,
-                    Success = false,
-                    Error = new Error
-                    {
-                        Message = "An error occurred while retrieving categories.",
-                        Code = "500"
-                    }
-                };
-                return StatusCode(StatusCodes.Status500InternalServerError, response);
-            }
+                Data = categories,
+                Success = true
+            };
+            return Ok(response);
         }
 
     }

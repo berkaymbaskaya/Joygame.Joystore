@@ -31,49 +31,16 @@ namespace Joygame.Joystore.API.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequestDto request)
         {
-            try
-            {
-                var passw = PasswordHasher.HashPassword(request.Password);
+            var passw = PasswordHasher.HashPassword(request.Password);
 
-                var result = _authService.Login(request.Username, request.Password);
-                _logger.LogInformation($"{request.Username} Logged in", request.Username);
-                var response = new ApiResponse<LoginResponseDto>
-                {
-                    Data = result,
-                    Success = true
-                };
-                return Ok(response);
-            }
-            catch (BaseException ex)
+            var result = _authService.Login(request.Username, request.Password);
+            _logger.LogInformation($"{request.Username} Logged in", request.Username);
+            var response = new ApiResponse<LoginResponseDto>
             {
-                _logger.LogWarning(ex, "Login failed for user {Username}", request.Username);
-                var response = new ApiResponse<string>
-                {
-                    Data = null,
-                    Success = false,
-                    Error= new Error
-                    {
-                        Message = ex.Message,
-                        Code = "401",
-                    }
-                };
-                return Unauthorized(response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, ex.Message, request.Username);
-                var response = new ApiResponse<string>
-                {
-                    Data = null,
-                    Success = false,
-                    Error = new Error
-                    {
-                        Message ="\"An unexpected error occurred on the server",
-                        Code = "500",
-                    }
-                };
-                return StatusCode(500, response);
-            }
+                Data = result,
+                Success = true
+            };
+            return Ok(response);
 
         }
 
@@ -81,98 +48,21 @@ namespace Joygame.Joystore.API.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDto request)
         {
-            try
-            {
-                await _authService.ForgotPassword(request);
-                return Ok();
-            }
-            catch (BaseException ex)
-            {
-                _logger.LogWarning($"Forgot Password Attempt failed on email:{request.Email} ");
-                var response = new ApiResponse<string>
-                {
-                    Data = null,
-                    Success = false,
-                    Error = new Error
-                    {
-                        Message = ex.Message,
-                        Code = "401",
-                    }
-                };
-                return Unauthorized(response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, ex.Message, request.Email);
-                var response = new ApiResponse<string>
-                {
-                    Data = null,
-                    Success = false,
-                    Error = new Error
-                    {
-                        Message = "An unexpected error occurred on the server.",
-                        Code = "500",
-                    }
-                };
-                return StatusCode(500, response);
-            }
-
+            await _authService.ForgotPassword(request);
+            return Ok();
         }
 
         [AllowAnonymous]
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDto request)
         {
-            try
+            await _authService.ResetPasswordAsync(request);
+            var response = new ApiResponse<string>
             {
-                await _authService.ResetPasswordAsync(request);
-                var response = new ApiResponse<string>
-                {
-                    Data = null,
-                    Success = true
-                };
-                return Ok(response);
-            }
-            catch (InvalidTokenException ex)
-            {
-                var response = new ApiResponse<string>
-                {
-                    Success = false,
-                    Error = new Error
-                    {
-                        Message = ex.Message,
-                        Code = "401",
-                    }
-                };
-                return Unauthorized(response);
-            }
-            catch (UserNotFoundException ex)
-            {
-                var response = new ApiResponse<string>
-                {
-                    Success = false,
-                    Error = new Error
-                    {
-                        Message = ex.Message,
-                        Code = "400",
-                    }
-                };
-                return BadRequest(response);
-            }
-            catch (Exception ex)
-            {
-                var response = new ApiResponse<string>
-                {
-                    Data = null,
-                    Success = false,
-                    Error = new Error
-                    {
-                        Message = "An unexpected error occurred on the server.",
-                        Code = "500",
-                    }
-                };
-                return StatusCode(500, response);
-            }
+                Data = null,
+                Success = true
+            };
+            return Ok(response);
 
         }
     }
