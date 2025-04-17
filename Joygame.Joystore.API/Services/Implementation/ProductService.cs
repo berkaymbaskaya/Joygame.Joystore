@@ -1,5 +1,8 @@
-﻿using Joygame.Joystore.API.Contexts;
+﻿using AutoMapper;
+using Joygame.Joystore.API.Contexts;
 using Joygame.Joystore.API.Core;
+using Joygame.Joystore.API.Entities;
+using Joygame.Joystore.API.Exceptions;
 using Joygame.Joystore.API.Models.Product;
 using Joygame.Joystore.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -7,12 +10,14 @@ using System.Data;
 
 namespace Joygame.Joystore.API.Services.Implementation
 {
-    public class ProductService:IProductService
+    public class ProductService : IProductService
     {
         private readonly ApplicationDbContext _context;
-        public ProductService(ApplicationDbContext context)
+        private readonly IMapper _mapper;
+        public ProductService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         public async Task<PagedResult<ProducListViewtDto>> GetPagedProducts(int pageNumber, int pageSize)
         {
@@ -59,6 +64,43 @@ namespace Joygame.Joystore.API.Services.Implementation
 
             return result;
         }
+        public async Task<int> CreateProduct(ProductCreateDto req)
+        {
+            try
+            {
+                var product = _mapper.Map<Product>(req);
+                _context.Products.Add(product);
+                await _context.SaveChangesAsync();
+                return product.Id;
+            }
+            catch
+            {
+                throw;
+            }
+
+        }
+        public async Task UpdateProduct(int id, ProductUpdateDto req)
+        {
+            try
+            {
+                var product = await _context.Products.FindAsync(id);
+                if (product == null)
+                {
+                    throw new AppExceptions.RecordNotFoundException("Product not found");
+                }
+
+                _mapper.Map(req, product);
+                product.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                throw;
+            }
+
+        }
+
 
     }
 }

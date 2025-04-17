@@ -10,6 +10,7 @@ using System.Text;
 using Serilog;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Joygame.Joystore.API.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,6 +76,9 @@ builder.Services.AddScoped<IProductService, ProductService>();
 
 #endregion
 
+#region Mapper Configuration
+builder.Services.AddAutoMapper(typeof(ProductMapper).Assembly);
+#endregion
 
 var app = builder.Build();
 

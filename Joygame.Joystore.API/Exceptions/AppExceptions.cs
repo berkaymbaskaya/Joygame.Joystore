@@ -30,5 +30,15 @@
             {
             }
         }
+
+        public class RecordNotFoundException : BaseException
+        {
+            public RecordNotFoundException() { }
+
+            public RecordNotFoundException(string message)
+                : base(message)
+            {
+            }
+        }
     }
 }
