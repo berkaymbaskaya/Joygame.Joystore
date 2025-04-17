@@ -8,6 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
 using Serilog;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +21,14 @@ builder.Configuration
 #endregion
 
 #region Services Configuration
-builder.Services.AddControllers();
+builder.Services.AddControllers(config =>
+{
+    var policy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+
+    config.Filters.Add(new AuthorizeFilter(policy));
+}); 
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -61,6 +70,7 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
 #region Services DI Container
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 #endregion
 
@@ -78,6 +88,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseSerilogRequestLogging();
 
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllers();
