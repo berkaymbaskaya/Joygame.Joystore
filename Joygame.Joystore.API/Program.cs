@@ -11,6 +11,7 @@ using Serilog;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Joygame.Joystore.API.Mapping;
+using Joygame.Joystore.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -95,6 +96,8 @@ app.UseSerilogRequestLogging();
 
 app.UseAuthentication(); 
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapControllers();
 
