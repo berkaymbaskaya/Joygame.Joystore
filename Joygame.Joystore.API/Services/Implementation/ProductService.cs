@@ -14,7 +14,7 @@ namespace Joygame.Joystore.API.Services.Implementation
         {
             _context = context;
         }
-        public async Task<PagedResult<ProducListViewtDto>> GetPagedProductsAsync(int pageNumber, int pageSize)
+        public async Task<PagedResult<ProducListViewtDto>> GetPagedProducts(int pageNumber, int pageSize)
         {
             var result = new PagedResult<ProducListViewtDto>();
 

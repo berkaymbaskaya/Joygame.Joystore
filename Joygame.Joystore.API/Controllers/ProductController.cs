@@ -19,10 +19,10 @@ namespace Joygame.Joystore.API.Controllers
         [HttpGet()]
         public async Task<IActionResult> GetPagedProducts(int pageNumber = 1, int pageSize = 10)
         {
-            var result = await _productService.GetPagedProductsAsync(pageNumber, pageSize);
-            var response = new ApiResponse<PagedResult<ProducViewtDto>>
+            var result = await _productService.GetPagedProducts(pageNumber, pageSize);
+            var response = new ApiResponse<PagedResult<ProducListViewtDto>>
             {
-                Data = new PagedResult<ProducViewtDto>
+                Data = new PagedResult<ProducListViewtDto>
                 {
                     Items = result.Items,
                     TotalCount = result.TotalCount
