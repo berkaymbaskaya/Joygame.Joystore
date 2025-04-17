@@ -71,6 +71,7 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 #endregion
 
