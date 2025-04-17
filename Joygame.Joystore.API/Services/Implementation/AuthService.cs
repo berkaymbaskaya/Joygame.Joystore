@@ -27,9 +27,8 @@ namespace Joygame.Joystore.API.Services.Implementation
         public LoginResponseDto Login(string username, string password)
         {
             var user = _context.Users
-                .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
                 .FirstOrDefault(u => u.Username == username);
+
 
             if (user == null)
             {
@@ -43,13 +42,21 @@ namespace Joygame.Joystore.API.Services.Implementation
                 throw new AppExceptions.InvalidCredentialException("Invalid username or password.");
             }
 
+            var userRoleIds = _context.UserRoles
+                .Where(ur => ur.UserId == user.Id)
+                .Select(ur => ur.RoleId)
+                .ToList();
+
+            var roles = _context.Roles
+                .Where(r => userRoleIds.Contains(r.Id))
+                .ToList();
             var claims = new List<Claim>
             {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Username),
             new Claim("Email", user.Email ?? "")
             };
-            claims.AddRange(user.UserRoles.Select(ur => new Claim(ClaimTypes.Role, ur.Role.Name)));
+            claims.AddRange(roles.Select(ur => new Claim(ClaimTypes.Role, ur.Name)));
 
             var tokenDto = _tokenProvider.GenerateToken(claims);
 
@@ -58,7 +65,7 @@ namespace Joygame.Joystore.API.Services.Implementation
                 UserName = user.Username,
                 UserId = user.Id.ToString(),
                 Email = user.Email,
-                Roles = user.UserRoles.Select(ur => ur.Role.Name).ToList()
+                Roles = roles.Select(ur => ur.Name).ToList()
             };
 
             return new LoginResponseDto

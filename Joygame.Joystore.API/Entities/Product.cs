@@ -15,9 +15,9 @@ public partial class Product
 
     public decimal? Price { get; set; }
 
-    public bool? IsActive { get; set; }
-
     public string? Description { get; set; }
+
+    public bool? IsActive { get; set; }
 
     public bool? IsDeleted { get; set; }
 
@@ -28,6 +28,4 @@ public partial class Product
     public DateTime? UpdatedAt { get; set; }
 
     public int? CreatedUser { get; set; }
-
-    public virtual Category Cat { get; set; } = null!;
 }

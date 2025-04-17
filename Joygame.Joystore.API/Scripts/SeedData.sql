@@ -16,7 +16,7 @@ GO
 -- USERS
 INSERT INTO Users (Username, PasswordHash, Email, CreatedUser)
 VALUES 
-('berkay', '$2a$11$Bf2oxcGfdiCaacBbB0EfVercdsz6CCk4klo0R4V0OrHR3Q4.fg3wS', 'berkay@joygame.com', NULL);
+('berkay', 'it-need-change-reset-password', 'berkay@joygame.com', NULL);
 GO
 
 -- ROLE ASSIGNMENTS
@@ -24,20 +24,29 @@ INSERT INTO UserRoles (UserId, RoleId, CreatedUser)
 SELECT 1, Id, NULL FROM Roles;
 GO
 
--- CATEGORIES
-INSERT INTO Categories (Name, ParentId, CreatedUser)
+-- Main Categories
+INSERT INTO Categories (Name, ParentId, IsActive, IsDeleted, CreatedAt, CreatedUser)
 VALUES 
-('MMO', NULL, NULL),               
-('FPS', 1, NULL),                 
-('RPG', 1, NULL),                  
-('Casual', 1, NULL);              
-GO
+('PC Oyunları', NULL, 1, 0, GETUTCDATE(), NULL),
+('Mobil Oyunlar', NULL, 1, 0, GETUTCDATE(), NULL),
+('Konsol Oyunları', NULL, 1, 0, GETUTCDATE(), NULL);
 
--- PRODUCTS 
-INSERT INTO Products (Name, CatId, ImageUrl, Price, Description, CreatedUser)
+-- Sub Categories - PC Games
+INSERT INTO Categories (Name, ParentId, IsActive, IsDeleted, CreatedAt, CreatedUser)
 VALUES 
-('Wolfteam', 2, 'https://placehold.co/600x400', 50.00, 'Popüler Joygame MMOFPS oyunu.', 1),
-('Goley', 4, 'https://placehold.co/600x400', 45.00, 'Futbol temalı casual oyun.', 1),
-('Rise of Mythos', 3, 'https://placehold.co/600x400', 40.00, 'Kart ve RPG tabanlı MMO oyunu.', 1),
-('Need for Speed Online', 4, 'https://placehold.co/600x400', 25.00, 'Online araba yarışı.', 1);
-GO
+('FPS', (SELECT Id FROM Categories WHERE Name = 'PC Oyunları'), 1, 0, GETUTCDATE(), NULL),
+('Strateji', (SELECT Id FROM Categories WHERE Name = 'PC Oyunları'), 1, 0, GETUTCDATE(), NULL),
+('MMORPG', (SELECT Id FROM Categories WHERE Name = 'PC Oyunları'), 1, 0, GETUTCDATE(), NULL);
+
+-- Sub Categories - Mobile Games
+INSERT INTO Categories (Name, ParentId, IsActive, IsDeleted, CreatedAt, CreatedUser)
+VALUES 
+('Puzzle', (SELECT Id FROM Categories WHERE Name = 'Mobil Oyunlar'), 1, 0, GETUTCDATE(), NULL),
+('Casual', (SELECT Id FROM Categories WHERE Name = 'Mobil Oyunlar'), 1, 0, GETUTCDATE(), NULL);
+
+-- Sub Categories - Console Games
+INSERT INTO Categories (Name, ParentId, IsActive, IsDeleted, CreatedAt, CreatedUser)
+VALUES 
+('Aksiyon', (SELECT Id FROM Categories WHERE Name = 'Konsol Oyunları'), 1, 0, GETUTCDATE(), NULL),
+('Spor', (SELECT Id FROM Categories WHERE Name = 'Konsol Oyunları'), 1, 0, GETUTCDATE(), NULL);
+

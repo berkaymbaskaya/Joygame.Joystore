@@ -55,8 +55,6 @@ BEGIN
         CreatedAt DATETIME NOT NULL DEFAULT GETUTCDATE(),
         UpdatedAt DATETIME NULL,
         CreatedUser INT NULL,
-        CONSTRAINT FK_UserRoles_Users FOREIGN KEY (UserId) REFERENCES Users(Id),
-        CONSTRAINT FK_UserRoles_Roles FOREIGN KEY (RoleId) REFERENCES Roles(Id)
     );
 END
 GO
@@ -79,16 +77,6 @@ BEGIN
 END
 GO
 
--- CATEGORIES FOREIGN KEY
-IF NOT EXISTS (
-    SELECT * FROM sys.foreign_keys WHERE name = 'FK_Categories_Parent'
-)
-BEGIN
-    ALTER TABLE Categories
-    ADD CONSTRAINT FK_Categories_Parent FOREIGN KEY (ParentId) REFERENCES Categories(Id);
-END
-GO
-
 -- PRODUCTS
 IF OBJECT_ID('Products', 'U') IS NULL
 BEGIN
@@ -98,7 +86,6 @@ BEGIN
         CatId INT NOT NULL,
         ImageUrl NVARCHAR(200),
         Price DECIMAL(18, 2),
-        IsActive BIT,
         Description NVARCHAR(MAX),
         IsActive BIT DEFAULT 1,
         IsDeleted BIT DEFAULT 0,
@@ -110,12 +97,3 @@ BEGIN
 END
 GO
 
--- PRODUCTS FOREIGN KEY
-IF NOT EXISTS (
-    SELECT * FROM sys.foreign_keys WHERE name = 'FK_Products_Categories'
-)
-BEGIN
-    ALTER TABLE Products
-    ADD CONSTRAINT FK_Products_Categories FOREIGN KEY (CatId) REFERENCES Categories(Id);
-END
-GO

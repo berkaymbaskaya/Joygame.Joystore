@@ -20,6 +20,4 @@ public partial class Role
     public DateTime? UpdatedAt { get; set; }
 
     public int? CreatedUser { get; set; }
-
-    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }
