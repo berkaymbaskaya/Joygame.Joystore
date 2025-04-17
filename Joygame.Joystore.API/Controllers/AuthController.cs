@@ -26,11 +26,6 @@ namespace Joygame.Joystore.API.Controllers
             _authService = authService;
             _logger = logger;
         }
-        [HttpGet]
-        public IActionResult Get()
-        {
-            return Ok();
-        }
 
         [AllowAnonymous]
         [HttpPost("login")]
