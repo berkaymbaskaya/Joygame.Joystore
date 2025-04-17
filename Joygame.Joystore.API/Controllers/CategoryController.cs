@@ -1,6 +1,7 @@
 ﻿using Joygame.Joystore.API.Core;
 using Joygame.Joystore.API.Models.Category;
 using Joygame.Joystore.API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,9 @@ namespace Joygame.Joystore.API.Controllers
             _categoryService = categoryService;
             _logger = logger;
         }
-        [HttpGet("categories")]
+
+        [Authorize(Roles = "category_view")]
+        [HttpGet()]
         public IActionResult GetCategories()
         {
             var categories = _categoryService.GetCategories();
