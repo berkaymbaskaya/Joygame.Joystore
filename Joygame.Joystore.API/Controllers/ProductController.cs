@@ -2,6 +2,7 @@
 using Joygame.Joystore.API.Exceptions;
 using Joygame.Joystore.API.Models.Product;
 using Joygame.Joystore.API.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace Joygame.Joystore.API.Controllers
             _logger = logger;
         }
 
+        [Authorize(Roles = "product_view")]
         [HttpGet()]
         public async Task<IActionResult> GetPagedProducts(int pageNumber = 1, int pageSize = 10)
         {
@@ -36,6 +38,7 @@ namespace Joygame.Joystore.API.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "product_update")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id,[FromBody] ProductUpdateDto req)
         {
@@ -43,6 +46,7 @@ namespace Joygame.Joystore.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "product_creator")]
         [HttpPost()]
         public async Task<IActionResult> CreateProduct([FromBody] ProductCreateDto req)
         {
@@ -54,7 +58,8 @@ namespace Joygame.Joystore.API.Controllers
             };
             return Ok(response);
         }
-        
+
+        [Authorize(Roles = "product_delete")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {

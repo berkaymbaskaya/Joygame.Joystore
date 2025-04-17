@@ -8,6 +8,7 @@ VALUES
 ('product_view', NULL),
 ('product_creator', NULL),
 ('product_update', NULL),
+('product_delete', NULL),
 ('category_view', NULL),
 ('category_creator', NULL),
 ('category_update', NULL);
