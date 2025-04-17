@@ -84,7 +84,8 @@ namespace Joygame.Joystore.API.Services.Implementation
             try
             {
                 var product = await _context.Products.FindAsync(id);
-                if (product == null)
+
+                if (product == null || product.IsDeleted == true)
                 {
                     throw new AppExceptions.RecordNotFoundException("Product not found");
                 }
@@ -100,7 +101,27 @@ namespace Joygame.Joystore.API.Services.Implementation
             }
 
         }
+        public async Task DeleteProduct(int id)
+        {
+            try
+            {
+                var product = await _context.Products.FindAsync(id);
 
+                if (product == null || product.IsDeleted == true)
+                {
+                    throw new AppExceptions.RecordNotFoundException("Product not found");
+                }
+                product.IsDeleted = true;
+                product.DeletedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                throw;
+            }
+
+        }
 
     }
 }

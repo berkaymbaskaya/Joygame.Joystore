@@ -119,5 +119,47 @@ namespace Joygame.Joystore.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
+        
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            try
+            {
+                await _productService.DeleteProduct(id);
+                return NoContent();
+            }
+            catch (BaseException ex)
+            {
+                _logger.LogWarning(ex, "Error on UpdateProduct");
+                var response = new ApiResponse<string>
+                {
+                    Data = null,
+                    Success = false,
+                    Error = new Error
+                    {
+                        Message = ex.Message,
+                        Code = "400"
+                    }
+                };
+                return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error on UpdateProduct");
+                var response = new ApiResponse<string>
+                {
+                    Data = null,
+                    Success = false,
+                    Error = new Error
+                    {
+                        Message = "An error occurred while UpdateProduct.",
+                        Code = "500"
+                    }
+                };
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+
     }
 }
