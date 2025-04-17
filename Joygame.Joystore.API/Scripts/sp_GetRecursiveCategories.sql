@@ -1,4 +1,4 @@
-﻿CREATE OR ALTER PROCEDURE sp_GetRecursiveCategories
+﻿CREATE OR ALTER PROCEDURE [dbo].[sp_GetRecursiveCategories]
 AS
 BEGIN
     SET NOCOUNT ON;
