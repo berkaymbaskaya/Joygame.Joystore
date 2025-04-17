@@ -14,9 +14,9 @@ namespace Joygame.Joystore.API.Services.Implementation
         {
             _context = context;
         }
-        public async Task<PagedResult<ProducViewtDto>> GetPagedProductsAsync(int pageNumber, int pageSize)
+        public async Task<PagedResult<ProducListViewtDto>> GetPagedProductsAsync(int pageNumber, int pageSize)
         {
-            var result = new PagedResult<ProducViewtDto>();
+            var result = new PagedResult<ProducListViewtDto>();
 
             using var connection = _context.Database.GetDbConnection();
             await connection.OpenAsync();
@@ -39,7 +39,7 @@ namespace Joygame.Joystore.API.Services.Implementation
 
             while (await reader.ReadAsync())
             {
-                result.Items.Add(new ProducViewtDto
+                result.Items.Add(new ProducListViewtDto
                 {
                     Id = reader.GetInt32(0),
                     Name = reader.GetString(1),
