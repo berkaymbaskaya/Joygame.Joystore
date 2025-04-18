@@ -32,6 +32,8 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Category>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Categori__3214EC071EC71D98");
@@ -125,7 +127,14 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<CategoryDto>().HasNoKey().ToView(null); // Çünkü bu bir SP sonucu
+        modelBuilder.Entity<CategoryDto>().HasNoKey().ToView(null); // Procedure Result
+
+        modelBuilder.Entity<Category>().HasQueryFilter(p => p.IsDeleted != true && p.IsActive == true);
+        modelBuilder.Entity<PasswordResetToken>().HasQueryFilter(p => p.IsDeleted != true && p.IsActive == true);
+        modelBuilder.Entity<Product>().HasQueryFilter(p => p.IsDeleted != true && p.IsActive == true);
+        modelBuilder.Entity<Role>().HasQueryFilter(p => p.IsDeleted != true && p.IsActive == true);
+        modelBuilder.Entity<User>().HasQueryFilter(p => p.IsDeleted != true && p.IsActive == true);
+        modelBuilder.Entity<UserRole>().HasQueryFilter(p => p.IsDeleted != true && p.IsActive == true);
 
         OnModelCreatingPartial(modelBuilder);
     }
