@@ -1,10 +1,10 @@
-﻿IF DB_ID('JoystoreDb_Test') IS NULL
+﻿IF DB_ID('JoystoreDb') IS NULL
 BEGIN
-    CREATE DATABASE JoystoreDb_Test;
+    CREATE DATABASE JoystoreDb;
 END
 GO
 
-USE JoystoreDb_Test;
+USE JoystoreDb;
 GO
 
 -- ROLES 
@@ -112,7 +112,7 @@ CREATE TABLE PasswordResetTokens (
 );
 
 
-USE JoystoreDb_Test;
+USE JoystoreDb;
 GO
 
 -- ROLLER
@@ -168,7 +168,7 @@ VALUES
 
 
 
-USE JoystoreDb_Test;
+USE JoystoreDb;
 GO
 -- FPS
 INSERT INTO Products (Name, CatId, ImageUrl, Price, IsActive, Description, CreatedAt, CreatedUser)
