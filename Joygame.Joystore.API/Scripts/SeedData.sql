@@ -17,7 +17,7 @@ GO
 -- USERS
 INSERT INTO Users (Username, PasswordHash, Email, CreatedUser)
 VALUES 
-('berkay', 'it-need-change-reset-password', 'berkay@joygame.com', NULL);
+('berkay', '$2a$11$BIo4d1KwZb1A.QMAGtsDn.zefd2r/89PuAAfudcFk.rwJg/zfIM2G', 'berkay@joygame.com', NULL);
 GO
 
 -- ROLE ASSIGNMENTS
