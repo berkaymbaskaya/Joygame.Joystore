@@ -19,51 +19,30 @@ namespace Joygame.Joystore.API.Services.Implementation
             _context = context;
             _mapper = mapper;
         }
-        public async Task<PagedResult<ProductViewtDto>> GetPagedProducts(int pageNumber, int pageSize)
+        public async Task<PagedResult<ProductViewDto>> GetPagedProducts(int pageNumber, int pageSize)
         {
-            var result = new PagedResult<ProductViewtDto>();
+            var result = new PagedResult<ProductViewDto>();
 
-            using var connection = _context.Database.GetDbConnection();
-            await connection.OpenAsync();
+            // 1. Data from SP
+            var data = await _context.ProductViewDto
+                .FromSqlRaw("EXEC sp_GetProductsWithCategory @PageNumber = {0}, @PageSize = {1}", pageNumber, pageSize)
+                .ToListAsync();
 
-            using var command = connection.CreateCommand();
-            command.CommandText = "sp_GetProductsWithCategory";
-            command.CommandType = CommandType.StoredProcedure;
+            result.Items = data;
 
-            var param1 = command.CreateParameter();
-            param1.ParameterName = "@PageNumber";
-            param1.Value = pageNumber;
-            command.Parameters.Add(param1);
-
-            var param2 = command.CreateParameter();
-            param2.ParameterName = "@PageSize";
-            param2.Value = pageSize;
-            command.Parameters.Add(param2);
-
-            using var reader = await command.ExecuteReaderAsync();
-
-            while (await reader.ReadAsync())
-            {
-                result.Items.Add(new ProductViewtDto
-                {
-                    Id = reader.GetInt32(0),
-                    Name = reader.GetString(1),
-                    CategoryId = reader.GetInt32(2),
-                    ParentCategoryId = reader.IsDBNull(3) ? null : reader.GetInt32(3),
-                    CategoryName = reader.GetString(4),
-                    ParentCategoryName = reader.IsDBNull(5) ? null : reader.GetString(5),
-                    Price = reader.GetDecimal(6),
-                    ImageUrl = reader.IsDBNull(7) ? null : reader.GetString(7)
-                });
-            }
-
-            if (await reader.NextResultAsync() && await reader.ReadAsync())
-            {
-                result.TotalCount = reader.GetInt32(0);
-            }
+            // 2. Total count: EF LINQ 
+            result.TotalCount = await _context.Products
+                .Where(p => p.IsDeleted == false && p.IsActive == true)
+                .Join(_context.Categories,
+                      p => p.CatId,
+                      c => c.Id,
+                      (p, c) => new { Product = p, Category = c })
+                .Where(x => x.Category.IsDeleted == false && x.Category.IsActive == true)
+                .CountAsync();
 
             return result;
         }
+
         public async Task<int> CreateProduct(ProductCreateRequestDto req)
         {
             try
