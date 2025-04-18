@@ -303,9 +303,6 @@ BEGIN
 END
 GO
 
-USE JoystoreDb;
-GO
-
 CREATE NONCLUSTERED INDEX IX_Products_CatId
 ON Products (CatId);
 GO
