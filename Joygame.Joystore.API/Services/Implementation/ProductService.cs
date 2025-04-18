@@ -19,9 +19,9 @@ namespace Joygame.Joystore.API.Services.Implementation
             _context = context;
             _mapper = mapper;
         }
-        public async Task<PagedResult<ProducListViewtDto>> GetPagedProducts(int pageNumber, int pageSize)
+        public async Task<PagedResult<ProducViewtDto>> GetPagedProducts(int pageNumber, int pageSize)
         {
-            var result = new PagedResult<ProducListViewtDto>();
+            var result = new PagedResult<ProducViewtDto>();
 
             using var connection = _context.Database.GetDbConnection();
             await connection.OpenAsync();
@@ -44,7 +44,7 @@ namespace Joygame.Joystore.API.Services.Implementation
 
             while (await reader.ReadAsync())
             {
-                result.Items.Add(new ProducListViewtDto
+                result.Items.Add(new ProducViewtDto
                 {
                     Id = reader.GetInt32(0),
                     Name = reader.GetString(1),
@@ -64,7 +64,7 @@ namespace Joygame.Joystore.API.Services.Implementation
 
             return result;
         }
-        public async Task<int> CreateProduct(ProductCreateDto req)
+        public async Task<int> CreateProduct(ProductCreateRequestDto req)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace Joygame.Joystore.API.Services.Implementation
             }
 
         }
-        public async Task UpdateProduct(int id, ProductUpdateDto req)
+        public async Task UpdateProduct(int id, ProductUpdateRequestDto req)
         {
             try
             {
@@ -120,7 +120,19 @@ namespace Joygame.Joystore.API.Services.Implementation
             {
                 throw;
             }
-
+        }
+        public async Task<ProductDetailDto> GetProductDetail(int id)
+        {
+            try
+            {
+                var product = await _context.Products.FindAsync(id);
+                var productDetail = _mapper.Map<ProductDetailDto>(product);
+                return productDetail;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
     }

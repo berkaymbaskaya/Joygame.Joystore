@@ -7,8 +7,10 @@ namespace Joygame.Joystore.API.Mapping
     {
         public ProductMapper()
         {
-            CreateMap<ProductUpdateDto, Product>();
-            CreateMap<ProductCreateDto, Product>();
+            CreateMap<ProductUpdateRequestDto, Product>();
+            CreateMap<ProductCreateRequestDto, Product>();
+            CreateMap<Product, ProductDetailDto>();
+
 
         }
     }

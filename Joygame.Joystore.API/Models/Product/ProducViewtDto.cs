@@ -1,6 +1,6 @@
 ﻿namespace Joygame.Joystore.API.Models.Product
 {
-    public class ProducListViewtDto
+    public class ProducViewtDto
     {
         public int Id { get; set; }
         public string? Name { get; set; }
