@@ -30,5 +30,11 @@ A secure and modular ASP.NET Core Web API developed for Joygame, implementing a 
 
 3. **dotnet run**
 
+## 🧪 Postman Collection
+
+You can test all endpoints using our official Postman collection:
+
+🔗 [Download Collection](./Docs/Joystore.API.postman_collection)
+
 Author
 Developed by Berkay Başkaya
