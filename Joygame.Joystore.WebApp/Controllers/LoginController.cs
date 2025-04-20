@@ -41,6 +41,16 @@ namespace Joygame.Joystore.WebApp.Controllers
 
                 var result = await _authService.Login(loginDto);
 
+                if (model.RememberMe)
+                {
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Expires = DateTimeOffset.UtcNow.AddDays(3)
+                    };
+                    Response.Cookies.Append("jwt_token", result.Data.Token.AccessToken, cookieOptions);
+                }
+
                 HttpContext.Session.SetString("token", JsonConvert.SerializeObject(result.Data.Token));
                 HttpContext.Session.SetString("username", result.Data.User.UserName);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(result.Data.User));
@@ -58,8 +68,10 @@ namespace Joygame.Joystore.WebApp.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
+            Response.Cookies.Delete("jwt_token");
             return RedirectToAction("Index", "Login");
         }
+
 
 
 
