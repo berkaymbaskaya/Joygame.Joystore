@@ -26,7 +26,7 @@ namespace Joygame.Joystore.WebApp.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Index(LoginViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -41,7 +41,7 @@ namespace Joygame.Joystore.WebApp.Controllers
 
                 var result = await _authService.Login(loginDto);
 
-                HttpContext.Session.SetString("token", result.Data.Token.AccessToken);
+                HttpContext.Session.SetString("token", JsonConvert.SerializeObject(result.Data.Token));
                 HttpContext.Session.SetString("username", result.Data.User.UserName);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(result.Data.User));
 
@@ -50,7 +50,7 @@ namespace Joygame.Joystore.WebApp.Controllers
             catch (ApiException ex)
             {
                 ModelState.AddModelError(string.Empty, "Login failed. Please check your credentials.");
-                return View(model);
+                return View("Index", model);
             }
         }
 

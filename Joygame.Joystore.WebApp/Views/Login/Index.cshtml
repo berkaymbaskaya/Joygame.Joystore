@@ -3,10 +3,16 @@
 
 @{
     ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LoginLayout.cshtml";
+
 }
 
+<form asp-action="Index" method="post">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div asp-validation-summary="All" class="alert alert-danger"></div>
+    }
 
-<form asp-action="Login" method="post">
     <div class="form-group">
         <label asp-for="Username"></label>
         <input asp-for="Username" class="form-control" />
@@ -25,3 +31,6 @@
 
     <button type="submit" class="btn btn-primary">Login</button>
 </form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

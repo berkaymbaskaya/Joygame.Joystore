@@ -1,4 +1,7 @@
-﻿namespace Joygame.Joystore.WebApp.Middlewares
+﻿using Joygame.Joystore.API.Models.Login;
+using Newtonsoft.Json;
+
+namespace Joygame.Joystore.WebApp.Middlewares
 {
     public class TokenCheckMiddleware
     {
@@ -11,15 +14,25 @@
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var token = context.Session.GetString("token");
+            var tokenObj = context.Session.GetString("token");
             var path = context.Request.Path.Value?.ToLower();
 
-            if (string.IsNullOrEmpty(token) && !path.StartsWith("/login"))
+            if (string.IsNullOrEmpty(tokenObj) && !path.StartsWith("/login"))
             {
                 context.Response.Redirect("/Login");
                 return;
             }
+            else if(!path.StartsWith("/login"))
+            {
+                var token = JsonConvert.DeserializeObject<TokenDto>(tokenObj).AccessToken;
+                var expireTime = JsonConvert.DeserializeObject<TokenDto>(tokenObj).Expiration;
 
+                if ((string.IsNullOrEmpty(token) || expireTime < DateTime.UtcNow))
+                {
+                    context.Response.Redirect("/Login");
+                    return;
+                }
+            }
             await _next(context);
         }
     }
