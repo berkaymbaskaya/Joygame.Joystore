@@ -54,5 +54,14 @@ namespace Joygame.Joystore.WebApp.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Login");
+        }
+
+
+
     }
 }
