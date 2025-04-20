@@ -45,7 +45,7 @@ namespace Joygame.Joystore.WebApp.Controllers
                 HttpContext.Session.SetString("username", result.Data.User.UserName);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(result.Data.User));
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Product");
             }
             catch (ApiException ex)
             {

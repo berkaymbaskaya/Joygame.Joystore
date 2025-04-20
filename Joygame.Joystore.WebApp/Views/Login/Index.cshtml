@@ -3,34 +3,48 @@
 
 @{
     ViewData["Title"] = "Login";
-    Layout = "~/Views/Shared/_LoginLayout.cshtml";
-
+    Layout = "~/Views/Shared/_LoginLayout.cshtml"; // Header/footer olmayan sade layout
 }
 
-<form asp-action="Index" method="post">
-    @if (!ViewData.ModelState.IsValid)
-    {
-        <div asp-validation-summary="All" class="alert alert-danger"></div>
-    }
+<div class="d-flex align-items-center justify-content-center vh-100 bg-light">
+    <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px;">
 
-    <div class="form-group">
-        <label asp-for="Username"></label>
-        <input asp-for="Username" class="form-control" />
-        <span asp-validation-for="Username" class="text-danger"></span>
+        <!-- Logo -->
+        <div class="text-center mb-4">
+            <img src="https://cdn.joy.ac/i/112810053/logo-joygame-116x40-w.png" alt="Joygame" style="max-height: 60px;" />
+            <h3 class="mt-2">Joystore Login</h3>
+        </div>
+
+        <!-- Validation -->
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="All" class="alert alert-danger"></div>
+        }
+
+        <!-- Form -->
+        <form asp-action="Index" method="post">
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control" placeholder="Enter your username" />
+                <span asp-validation-for="Username" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" type="password" placeholder="Enter your password" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
+                <label asp-for="RememberMe" class="form-check-label">Remember me</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
     </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" class="form-control" type="password" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <input asp-for="RememberMe" type="checkbox" /> Remember me
-    </div>
-
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
