@@ -26,7 +26,7 @@ namespace Joygame.Joystore.WebApp.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Index(LoginViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -41,18 +41,39 @@ namespace Joygame.Joystore.WebApp.Controllers
 
                 var result = await _authService.Login(loginDto);
 
-                HttpContext.Session.SetString("token", result.Data.Token.AccessToken);
+                if (model.RememberMe)
+                {
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Expires = DateTimeOffset.UtcNow.AddDays(3)
+                    };
+                    Response.Cookies.Append("jwt_token", result.Data.Token.AccessToken, cookieOptions);
+                }
+
+                HttpContext.Session.SetString("token", JsonConvert.SerializeObject(result.Data.Token));
                 HttpContext.Session.SetString("username", result.Data.User.UserName);
                 HttpContext.Session.SetString("user", JsonConvert.SerializeObject(result.Data.User));
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Product");
             }
             catch (ApiException ex)
             {
                 ModelState.AddModelError(string.Empty, "Login failed. Please check your credentials.");
-                return View(model);
+                return View("Index", model);
             }
         }
+
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            Response.Cookies.Delete("jwt_token");
+            return RedirectToAction("Index", "Login");
+        }
+
+
+
 
     }
 }

@@ -37,20 +37,26 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
     options.CheckConsentNeeded = context => false;
     options.MinimumSameSitePolicy = SameSiteMode.Lax;
 });
-
 #endregion
 
-// Add services to the container.
+#region Services Configuration
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<TokenHandler>();
 builder.Services.AddControllersWithViews();
+#endregion
 // Refit
+
+var apiBaseUri = new Uri(builder.Configuration["ApiSettings:BaseUrl"]);
+
+builder.Services.AddRefitClient<IProductService>()
+    .ConfigureHttpClient(c => c.BaseAddress = apiBaseUri)
+    .AddHttpMessageHandler<TokenHandler>();
+
 builder.Services.AddRefitClient<IAuthService>()
-    .ConfigureHttpClient(c =>
-    {
-        c.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"]);
-    });
+    .ConfigureHttpClient(c => c.BaseAddress = apiBaseUri)
+    .AddHttpMessageHandler<TokenHandler>();
 
 var app = builder.Build();
-
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -61,20 +67,20 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseStaticFiles();           
-app.UseCookiePolicy();          
+app.UseStaticFiles();
+app.UseCookiePolicy();
 
 app.UseRouting();
 
-app.UseSession();               
+app.UseSession();
 
 #region Token Middleware
 app.UseTokenCheck();
 
 #endregion
-app.MapStaticAssets();          
+app.MapStaticAssets();
 
-app.MapControllerRoute(         
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
