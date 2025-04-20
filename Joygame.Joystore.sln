@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Joygame.Joystore.Services",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Joygame.Joystore.WebApp", "Joygame.Joystore.WebApp\Joygame.Joystore.WebApp.csproj", "{474E88F1-158E-4B67-B524-E1C3376C4981}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Joygame.Joystore.Models", "Joygame.Joystore.Models\Joygame.Joystore.Models.csproj", "{FF6D158B-9798-43B4-A3B6-292372F7F546}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{474E88F1-158E-4B67-B524-E1C3376C4981}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{474E88F1-158E-4B67-B524-E1C3376C4981}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{474E88F1-158E-4B67-B524-E1C3376C4981}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF6D158B-9798-43B4-A3B6-292372F7F546}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF6D158B-9798-43B4-A3B6-292372F7F546}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF6D158B-9798-43B4-A3B6-292372F7F546}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF6D158B-9798-43B4-A3B6-292372F7F546}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
