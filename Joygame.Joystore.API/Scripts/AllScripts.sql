@@ -277,24 +277,28 @@ BEGIN
         SELECT 
             Id,
             Name,
-            ParentId
+            ParentId,
+			CAST(NULL AS NVARCHAR(100)) AS ParentName
+
         FROM Categories
-        WHERE ParentId IS NULL AND IsActive = 1 AND IsDeleted = 0
+        WHERE ParentId IS NULL AND IsDeleted = 0
 
         UNION ALL
 
         SELECT 
             c.Id,
             c.Name,
-            c.ParentId
+            c.ParentId,
+            rc.Name AS ParentName
         FROM Categories c
         INNER JOIN RecursiveCategory rc ON c.ParentId = rc.Id
-        WHERE c.IsActive = 1 AND c.IsDeleted = 0
+        WHERE  c.IsDeleted = 0
     )
     SELECT 
         Id,
         Name,
-        ParentId
+        ParentId,
+		ParentName
     FROM RecursiveCategory
 END
 GO
