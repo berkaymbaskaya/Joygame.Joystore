@@ -1,4 +1,14 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var roles = new List<string>();
+    var userJson = Context.Session.GetString("user");
+    if (!string.IsNullOrEmpty(userJson))
+    {
+
+        var user = Newtonsoft.Json.JsonConvert.DeserializeObject<Joygame.Joystore.API.Models.Login.UserDto>(userJson);
+        roles = user?.Roles ?? new List<string>();
+    }
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -22,9 +32,12 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Products</a>
-                        </li>
+                        @if (roles.Contains("product_view"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Products</a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
