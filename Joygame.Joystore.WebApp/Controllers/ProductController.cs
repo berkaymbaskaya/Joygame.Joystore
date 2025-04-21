@@ -119,6 +119,23 @@ namespace Joygame.Joystore.WebApp.Controllers
 
         }
 
+        [HttpPost("Product/Delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+
+            var response = await _productService.DeleteProduct(id);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Product deletion failed.";
+                return View();
+            }
+
+            TempData["Success"] = "Product deleted successfully.";
+            return RedirectToAction("Index");
+
+        }
+
 
 
     }
