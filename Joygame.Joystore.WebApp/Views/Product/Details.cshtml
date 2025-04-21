@@ -1,0 +1,54 @@
+﻿@model Joygame.Joystore.WebApp.Models.Product.ProductDetailModel
+
+@{
+    ViewData["Title"] = "Product Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2>Product Details</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-4">
+            @if (Model.ImageUrl != null)
+            {
+                <img src="@Model.ImageUrl" class="img-fluid rounded border" />
+            }
+            else
+            {
+                <img src="https://picsum.photos/200/200?random=@Model.Id" alt="Image" class="img-fluid rounded border" />
+            }
+        </div>
+        <div class="col-md-8">
+            <dl class="row">
+                <dt class="col-sm-4">Name:</dt>
+                <dd class="col-sm-8">@Model.Name</dd>
+
+                <dt class="col-sm-4">Price:</dt>
+                <dd class="col-sm-8">@Model.Price?.ToString("C")</dd>
+
+                <dt class="col-sm-4">Main Category:</dt>
+                <dd class="col-sm-8">@Model.ParentCategoryName</dd>
+
+                <dt class="col-sm-4">Category:</dt>
+                <dd class="col-sm-8">@Model.CategoryName</dd>
+
+                <dt class="col-sm-4">Description:</dt>
+                <dd class="col-sm-8">@Model.Description</dd>
+
+                <dt class="col-sm-4">Image URL:</dt>
+                <dd class="col-sm-8">@Model.ImageUrl</dd>
+
+                <dd class="col-sm-8">
+                    <span class="badge @(Model.IsActive ? "bg-success" : "bg-danger")">
+                        @(Model.IsActive ? "Active" : "Inactive")
+                    </span>
+                </dd>
+
+
+            </dl>
+            <a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>
+        </div>
+    </div>
+</div>

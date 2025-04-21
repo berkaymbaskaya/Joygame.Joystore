@@ -22,7 +22,8 @@
                     <th>Price</th>
                     <th>Parent Category</th>
                     <th>Category</th>
-                    <th></th>
+                    <th>Active</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,14 +31,27 @@
                 {
                     <tr>
                         <td>
-                            <img src="https://picsum.photos/60/60?random=@product.Id" alt="Image" class="img-thumbnail" />
+                            @if (product.ImageUrl != null)
+                            {
+                                <img src="@product.ImageUrl" class="img-fluid rounded border" style="height:60px;width:60px;" />
+                            }
+                            else
+                            {
+                                <img src="https://picsum.photos/60/60?random=@product.Id" alt="Image" class="img-fluid rounded border" />
+                            }
                         </td>
                         <td>@product.Name</td>
                         <td>@product.Price?.ToString("C")</td>
                         <td>@product.ParentCategoryName</td>
                         <td>@product.CategoryName</td>
+                        <td>
+                            <span class="badge @(product.IsActive ? "bg-success" : "bg-danger")">
+                                @(product.IsActive ? "Active" : "Inactive")
+                            </span>
+                        </td>
                         <td class="text-end">
                             <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-outline-dark me-1">Edit</a>
+                            <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-sm btn-outline-dark me-1">Details</a>
                             <form asp-action="Delete" asp-route-id="@product.Id" method="post" class="d-inline">
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">Delete</button>
@@ -70,12 +84,82 @@
                 </select>
             </form>
         }
-
-
-
     }
     else
     {
         <div class="alert alert-info">No products found.</div>
     }
+
+    <!-- Edit Product Modal -->
+    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="editProductForm" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="editProductId" name="Id" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Name</label>
+                            <input class="form-control" name="Name" id="editProductName" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Price</label>
+                            <input class="form-control" name="Price" id="editProductPrice" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Category Name</label>
+                            <input class="form-control" name="CategoryId" id="editCatId" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <input class="form-control" name="Description" id="editDescription" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Image Url</label>
+                            <input class="form-control" name="description" id="EditImageUrl" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+@section Scripts {
+    <script>
+        function openEditModal(product) {
+            document.getElementById('editProductId').value = product.id;
+            document.getElementById('editProductName').value = product.name;
+            document.getElementById('editProductPrice').value = product.price;
+            document.getElementById('editCatId').value = product.catId;
+            document.getElementById('editDescription').value = product.description;
+            document.getElementById('EditImageUrl').value = product.imageUrl;
+
+            var modal = new bootstrap.Modal(document.getElementById('editProductModal'));
+            modal.show();
+        }
+
+        document.getElementById('editProductForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+
+            fetch('/Product/Edit', {
+                method: 'POST',
+                body: formData
+            }).then(res => {
+                if (res.ok) {
+                    location.reload();
+                } else {
+                    alert("Update failed.");
+                }
+            });
+        });
+    </script>
+}

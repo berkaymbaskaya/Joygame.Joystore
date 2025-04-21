@@ -31,6 +31,7 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<UserRole> UserRoles { get; set; }
     public DbSet<CategoryDto> RecursiveCategories { get; set; }
     public DbSet<ProductViewDto> ProductViewDto { get; set; }
+    public DbSet<ProductDetailDto> ProductDetailDto { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -132,6 +133,7 @@ public partial class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<CategoryDto>().HasNoKey().ToView(null); // Procedure Result
         modelBuilder.Entity<ProductViewDto>().HasNoKey().ToView(null);// Procedure Result
+        modelBuilder.Entity<ProductDetailDto>().HasNoKey().ToView(null);// Procedure Result
 
         modelBuilder.Entity<Category>().HasQueryFilter(p => p.IsDeleted != true && p.IsActive == true);
         modelBuilder.Entity<PasswordResetToken>().HasQueryFilter(p => p.IsDeleted != true && p.IsActive == true);
