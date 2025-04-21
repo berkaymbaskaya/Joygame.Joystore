@@ -14,7 +14,8 @@ namespace Joygame.Joystore.API.Services.Implementation
         }
         public List<CategoryDto> GetCategories()
         {
-            return _context.RecursiveCategories.FromSqlRaw("EXEC sp_GetRecursiveCategories").ToList();
+            var response= _context.RecursiveCategories.FromSqlRaw("EXEC sp_GetRecursiveCategories").ToList();
+            return response;
         }
     }
 }
