@@ -260,7 +260,7 @@ BEGIN
     WHERE 
         p.IsDeleted = 0  AND
         c.IsDeleted = 0  
-	ORDER BY p.Id
+	ORDER BY p.Id   DESC
 	OFFSET @Offset ROWS
     FETCH NEXT @PageSize ROWS ONLY;		
 END

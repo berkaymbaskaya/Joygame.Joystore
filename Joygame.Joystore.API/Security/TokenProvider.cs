@@ -20,7 +20,7 @@ namespace Joygame.Joystore.API.Security
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var expiresAt = DateTime.UtcNow.AddDays(3);
+            var expiresAt = DateTime.UtcNow.AddMinutes(60);
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["JwtSettings:Issuer"],

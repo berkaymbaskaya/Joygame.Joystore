@@ -11,6 +11,9 @@ using Serilog;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Joygame.Joystore.API.Mapping;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using Joygame.Joystore.API.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,11 +32,21 @@ builder.Services.AddControllers(config =>
         .Build();
 
     config.Filters.Add(new AuthorizeFilter(policy));
-}); 
+});
+#endregion
+
+
+#region Fluent Configuration
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<ProductCreateValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<ProductUpdateValidator>();
+#endregion
+
+
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-#endregion
 
 #region Authentication Configuration
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

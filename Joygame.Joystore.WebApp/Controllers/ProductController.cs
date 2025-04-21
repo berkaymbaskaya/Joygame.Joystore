@@ -102,7 +102,7 @@ namespace Joygame.Joystore.WebApp.Controllers
             return View(model);
         }
         [HttpPost("Product/Edit/{id}")]
-        public async Task<IActionResult> Edit(ProductDetailModel model)
+        public async Task<IActionResult> Edit(ProductEditModel model)
         {
             var updateDto = model.ToUpdateDto();
 
@@ -110,7 +110,7 @@ namespace Joygame.Joystore.WebApp.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
-                ModelState.AddModelError(string.Empty, "Update failed.");
+                TempData["Error"] = "Product Update failed.";
                 return View(model);
             }
 
