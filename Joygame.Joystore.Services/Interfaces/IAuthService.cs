@@ -16,10 +16,10 @@ namespace Joygame.Joystore.Services.Interfaces
         [Post("/Auth/Login")]
         Task<API.Core.ApiResponse<LoginResponseDto>> Login([Body] LoginRequestDto request);
         [Post("/Auth/forgot-password")]
-        Task<HttpResponseMessage> ForgotPassword([Body] ForgotPasswordRequestDto request);
+        Task ForgotPassword([Body] ForgotPasswordRequestDto request);
 
         [Post("/Auth/reset-password")]
-        Task<HttpResponseMessage> ResetPassword([Body] ResetPasswordRequestDto request);
+        Task ResetPassword([Body] ResetPasswordRequestDto request);
 
     }
 }

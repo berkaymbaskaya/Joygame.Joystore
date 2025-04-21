@@ -1,5 +1,6 @@
 ﻿using Joygame.Joystore.API.Models.ForgotPassword;
 using Joygame.Joystore.API.Models.Login;
+using Joygame.Joystore.API.Models.ResetPassword;
 using Joygame.Joystore.Services.Interfaces;
 using Joygame.Joystore.WebApp.Models.Login;
 using Microsoft.AspNetCore.Authorization;
@@ -98,18 +99,54 @@ namespace Joygame.Joystore.WebApp.Controllers
                 var dto = new ForgotPasswordRequestDto
                 {
                     Email = model.Email
-                };
-
+                };      
                 await _authService.ForgotPassword(dto);
                 TempData["Success"] = "Password reset instructions have been sent to your email.";
                 return RedirectToAction("Index");
             }
             catch (ApiException ex)
             {
-                TempData["Error"] = "Email not found or service error.";
+                TempData["Error"] = "Email not found";
                 return View("ForgotPassword",model);
             }
         }
 
+
+        [HttpGet("Login/ResetPassword")]
+        public IActionResult ResetPassword(string token)
+        {
+            var model = new ResetPasswordViewModel
+            {
+                Token = token
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("Login/ResetPassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            try
+            {
+                var dto = new ResetPasswordRequestDto
+                {
+                    Token = model.Token,
+                    NewPassword = model.NewPassword
+                };
+
+                await _authService.ResetPassword(dto);
+
+                TempData["Success"] = "Password successfully reset.";
+                return RedirectToAction("Index");
+            }
+            catch (ApiException ex)
+            {
+                TempData["Error"] = "Token expired or invalid.";
+                return RedirectToAction("Index");
+            }
+        }
     }
 }

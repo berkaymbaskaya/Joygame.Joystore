@@ -77,80 +77,67 @@ namespace Joygame.Joystore.API.Services.Implementation
 
         public async Task ForgotPassword(ForgotPasswordRequestDto request)
         {
-            try
+            var user = _context.Users.FirstOrDefault(u => u.Email == request.Email);
+
+            if (user == null)
             {
-                var user = _context.Users.FirstOrDefault(u => u.Email == request.Email);
-
-                if (user == null)
-                {
-                    throw new AppExceptions.UserNotFoundException("User not found.");
-                }
-
-                var token = Guid.NewGuid().ToString("N");
-
-                var resetToken = new PasswordResetToken
-                {
-                    UserId = user.Id,
-                    Token = token,
-                    ExpiresAt = DateTime.UtcNow.AddHours(1),
-                    CreatedAt = DateTime.UtcNow,
-                    IsUsed = false,
-                    IsActive = true,
-                    IsDeleted = false,
-                    CreatedUser = user.Id
-                };
-
-                _context.PasswordResetTokens.Add(resetToken);
-                await _context.SaveChangesAsync();
-                _logger.LogInformation($"Forgot Password Token Created for email:{request.Email} ");
+                throw new AppExceptions.UserNotFoundException("User not found.");
             }
-            catch
+
+            var token = Guid.NewGuid().ToString("N");
+
+            var resetToken = new PasswordResetToken
             {
-                throw;
-            }
+                UserId = user.Id,
+                Token = token,
+                ExpiresAt = DateTime.UtcNow.AddHours(1),
+                CreatedAt = DateTime.UtcNow,
+                IsUsed = false,
+                IsActive = true,
+                IsDeleted = false,
+                CreatedUser = user.Id
+            };
+
+            _context.PasswordResetTokens.Add(resetToken);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation($"Forgot Password Token Created for email:{request.Email} ");
         }
 
         public async Task ResetPasswordAsync(ResetPasswordRequestDto request)
         {
-            try
+            var resetToken = _context.PasswordResetTokens
+                    .FirstOrDefault(t =>
+                        t.Token == request.Token &&
+                        t.IsUsed == false &&
+                        t.IsDeleted == false &&
+                        t.IsActive == true &&
+                        t.ExpiresAt > DateTime.UtcNow);
+
+            if (resetToken == null)
             {
-                var resetToken = _context.PasswordResetTokens
-                        .FirstOrDefault(t =>
-                            t.Token == request.Token &&
-                            t.IsUsed == false &&
-                            t.IsDeleted == false &&
-                            t.IsActive == true &&
-                            t.ExpiresAt > DateTime.UtcNow);
-
-                if (resetToken == null)
-                {
-                    _logger.LogWarning($"Password reset failed (Invalid or expired token)");
-                    throw new AppExceptions.InvalidTokenException("Invalid or expired token.");
-                }
-
-                var user = _context.Users.FirstOrDefault(u => u.Id == resetToken.UserId);
-
-                if (user == null)
-                {
-                    _logger.LogWarning($"Password reset failed (User not found)");
-                    throw new AppExceptions.UserNotFoundException("User not found.");
-                }
-
-                user.PasswordHash = PasswordHasher.HashPassword(request.NewPassword);
-                user.UpdatedAt = DateTime.UtcNow;
-
-                resetToken.IsUsed = true;
-                resetToken.UpdatedAt = DateTime.UtcNow;
-
-                await _context.SaveChangesAsync();
-
-                _logger.LogInformation($"Password successfully reset for UserId: {user.Id}");
+                _logger.LogWarning($"Password reset failed (Invalid or expired token)");
+                throw new AppExceptions.InvalidTokenException("Invalid or expired token.");
             }
-            catch
+
+            var user = _context.Users.FirstOrDefault(u => u.Id == resetToken.UserId);
+
+            if (user == null)
             {
-                throw;
+                _logger.LogWarning($"Password reset failed (User not found)");
+                throw new AppExceptions.UserNotFoundException("User not found.");
             }
-    
+
+            user.PasswordHash = PasswordHasher.HashPassword(request.NewPassword);
+            user.UpdatedAt = DateTime.UtcNow;
+
+            resetToken.IsUsed = true;
+            resetToken.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"Password successfully reset for UserId: {user.Id}");
+
+
         }
 
     }
