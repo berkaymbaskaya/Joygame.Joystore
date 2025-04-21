@@ -15,5 +15,9 @@ namespace Joygame.Joystore.Services.Interfaces
         [Get("/Product")]
         Task<API.Core.ApiResponse<PagedResult<ProductViewDto>>> GetProduct(int pageNumber,int pageSize);
 
+        [Get("/Product/{id}")]
+        Task<API.Core.ApiResponse<ProductDetailDto>> GetProductById(int id);
+
+
     }
 }

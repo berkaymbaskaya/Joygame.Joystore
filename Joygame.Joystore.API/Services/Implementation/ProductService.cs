@@ -32,14 +32,13 @@ namespace Joygame.Joystore.API.Services.Implementation
 
             // 2. Total count: EF LINQ 
             result.TotalCount = await _context.Products
-                .Where(p => p.IsDeleted == false && p.IsActive == true)
+                .Where(p => p.IsDeleted == false)
                 .Join(_context.Categories,
                       p => p.CatId,
                       c => c.Id,
                       (p, c) => new { Product = p, Category = c })
-                .Where(x => x.Category.IsDeleted == false && x.Category.IsActive == true)
+                .Where(x => x.Category.IsDeleted == false)
                 .CountAsync();
-
             return result;
         }
 
@@ -104,9 +103,14 @@ namespace Joygame.Joystore.API.Services.Implementation
         {
             try
             {
-                var product = await _context.Products.FindAsync(id);
-                var productDetail = _mapper.Map<ProductDetailDto>(product);
-                return productDetail;
+                var data = await _context.ProductDetailDto
+                    .FromSqlRaw("EXEC sp_GetProductsWithCategoryById @ProductId = {0}", id)
+                    .ToListAsync();
+
+                var product = data.SingleOrDefault();
+                if (product == null)
+                    throw new AppExceptions.RecordNotFoundException("Product not found.");
+                return product;
             }
             catch
             {
