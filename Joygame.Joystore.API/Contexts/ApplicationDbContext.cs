@@ -135,9 +135,9 @@ public partial class ApplicationDbContext : DbContext
         modelBuilder.Entity<ProductViewDto>().HasNoKey().ToView(null);// Procedure Result
         modelBuilder.Entity<ProductDetailDto>().HasNoKey().ToView(null);// Procedure Result
 
-        modelBuilder.Entity<Category>().HasQueryFilter(p => p.IsDeleted != true && p.IsActive == true);
+        modelBuilder.Entity<Category>().HasQueryFilter(p => p.IsDeleted != true);
         modelBuilder.Entity<PasswordResetToken>().HasQueryFilter(p => p.IsDeleted != true && p.IsActive == true);
-        modelBuilder.Entity<Product>().HasQueryFilter(p => p.IsDeleted != true && p.IsActive == true);
+        modelBuilder.Entity<Product>().HasQueryFilter(p => p.IsDeleted != true);
         modelBuilder.Entity<Role>().HasQueryFilter(p => p.IsDeleted != true && p.IsActive == true);
         modelBuilder.Entity<User>().HasQueryFilter(p => p.IsDeleted != true && p.IsActive == true);
         modelBuilder.Entity<UserRole>().HasQueryFilter(p => p.IsDeleted != true && p.IsActive == true);

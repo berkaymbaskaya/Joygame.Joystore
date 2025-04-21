@@ -102,7 +102,7 @@ namespace Joygame.Joystore.WebApp.Controllers
             return View(model);
         }
         [HttpPost("Product/Edit/{id}")]
-        public async Task<IActionResult> Update(ProductDetailModel model)
+        public async Task<IActionResult> Edit(ProductDetailModel model)
         {
             var updateDto = model.ToUpdateDto();
 
@@ -115,6 +115,23 @@ namespace Joygame.Joystore.WebApp.Controllers
             }
 
             TempData["Success"] = "Product updated successfully.";
+            return RedirectToAction("Index");
+
+        }
+
+        [HttpPost("Product/Delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+
+            var response = await _productService.DeleteProduct(id);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Product deletion failed.";
+                return View();
+            }
+
+            TempData["Success"] = "Product deleted successfully.";
             return RedirectToAction("Index");
 
         }
