@@ -102,7 +102,7 @@ namespace Joygame.Joystore.WebApp.Controllers
             return View(model);
         }
         [HttpPost("Product/Edit/{id}")]
-        public async Task<IActionResult> Update(ProductDetailModel model)
+        public async Task<IActionResult> Edit(ProductDetailModel model)
         {
             var updateDto = model.ToUpdateDto();
 
