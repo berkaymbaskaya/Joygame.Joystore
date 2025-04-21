@@ -3,6 +3,7 @@ using Joygame.Joystore.Services.Interfaces;
 using Joygame.Joystore.WebApp.Models.Login;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Refit;
 
@@ -21,7 +22,15 @@ namespace Joygame.Joystore.WebApp.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            var model = new LoginViewModel();
+
+            if (Request.Cookies.TryGetValue("remembered_username", out var rememberedUsername))
+            {
+                model.Username = rememberedUsername;
+                model.RememberMe = true;
+            }
+
+            return View(model);
         }
 
         [AllowAnonymous]
@@ -48,7 +57,8 @@ namespace Joygame.Joystore.WebApp.Controllers
                         HttpOnly = true,
                         Expires = DateTimeOffset.UtcNow.AddDays(3)
                     };
-                    Response.Cookies.Append("jwt_token", result.Data.Token.AccessToken, cookieOptions);
+                    Response.Cookies.Append("remembered_username", result.Data.User.UserName, cookieOptions);
+
                 }
 
                 HttpContext.Session.SetString("token", JsonConvert.SerializeObject(result.Data.Token));

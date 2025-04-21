@@ -17,16 +17,6 @@ namespace Joygame.Joystore.WebApp.Middlewares
             var tokenJson = context.Session.GetString("token");
             var path = context.Request.Path.Value?.ToLower();
 
-            if (string.IsNullOrEmpty(tokenJson))
-            {
-                tokenJson = context.Request.Cookies["jwt_token"];
-
-                if (!string.IsNullOrEmpty(tokenJson))
-                {
-                    context.Session.SetString("token", tokenJson);
-                }
-            }
-
             if (string.IsNullOrEmpty(tokenJson) && !path.StartsWith("/login"))
             {
                 context.Response.Redirect("/Login");
@@ -42,7 +32,6 @@ namespace Joygame.Joystore.WebApp.Middlewares
                     if (string.IsNullOrEmpty(tokenDto.AccessToken) || tokenDto.Expiration < DateTime.UtcNow)
                     {
                         context.Session.Remove("token");
-                        context.Response.Cookies.Delete("jwt_token");
                         context.Response.Redirect("/Login");
                         return;
                     }
@@ -50,7 +39,6 @@ namespace Joygame.Joystore.WebApp.Middlewares
                 catch
                 {
                     context.Session.Remove("token");
-                    context.Response.Cookies.Delete("jwt_token");
                     context.Response.Redirect("/Login");
                     return;
                 }
