@@ -18,6 +18,10 @@ namespace Joygame.Joystore.Services.Interfaces
         [Get("/Product/{id}")]
         Task<API.Core.ApiResponse<ProductDetailDto>> GetProductById(int id);
 
+        [Put("/Product/{id}")]
+        Task<HttpResponseMessage> UpdateProduct(int id, [Body] ProductUpdateRequestDto request);
+
+
 
     }
 }

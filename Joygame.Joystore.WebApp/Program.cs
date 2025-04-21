@@ -56,6 +56,10 @@ builder.Services.AddRefitClient<IAuthService>()
     .ConfigureHttpClient(c => c.BaseAddress = apiBaseUri)
     .AddHttpMessageHandler<TokenHandler>();
 
+builder.Services.AddRefitClient<ICategoryService>()
+    .ConfigureHttpClient(c => c.BaseAddress = apiBaseUri)
+    .AddHttpMessageHandler<TokenHandler>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

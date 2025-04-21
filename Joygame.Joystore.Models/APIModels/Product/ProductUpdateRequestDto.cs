@@ -2,6 +2,7 @@
 {
     public class ProductUpdateRequestDto:BaseProductModel
     {
+        public int Id { get; set; }
     }
 
 }

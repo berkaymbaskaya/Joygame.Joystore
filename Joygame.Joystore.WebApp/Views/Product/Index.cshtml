@@ -31,7 +31,14 @@
                 {
                     <tr>
                         <td>
-                            <img src="https://picsum.photos/60/60?random=@product.Id" alt="Image" class="img-thumbnail" />
+                            @if (product.ImageUrl != null)
+                            {
+                                <img src="@product.ImageUrl" class="img-fluid rounded border" style="height:60px;width:60px;" />
+                            }
+                            else
+                            {
+                                <img src="https://picsum.photos/60/60?random=@product.Id" alt="Image" class="img-fluid rounded border" />
+                            }
                         </td>
                         <td>@product.Name</td>
                         <td>@product.Price?.ToString("C")</td>
@@ -43,7 +50,8 @@
                             </span>
                         </td>
                         <td class="text-end">
-                            <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-sm btn-outline-dark me-1">Edit</a>
+                            <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-outline-dark me-1">Edit</a>
+                            <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-sm btn-outline-dark me-1">Details</a>
                             <form asp-action="Delete" asp-route-id="@product.Id" method="post" class="d-inline">
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">Delete</button>
