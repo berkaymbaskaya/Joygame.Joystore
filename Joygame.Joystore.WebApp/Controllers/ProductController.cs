@@ -119,6 +119,38 @@ namespace Joygame.Joystore.WebApp.Controllers
 
         }
 
+        [HttpGet("Product/Create")]
+        public async Task<IActionResult> Create()
+        {
+            var categoryList = await _categoryService.GetCategory();
+            var model = new ProductCreateModel
+            {
+                CategorySelectList = categoryList.Data.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList()
+            };
+            return View(model);
+        }
+        [HttpPost("Product/Create")]
+        public async Task<IActionResult> Create(ProductCreateModel model)
+        {
+            var createDto = model.ToCreateDto();
+
+            var response = await _productService.CreateProduct(createDto);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError(string.Empty, "Create failed.");
+                return View(model);
+            }
+
+            TempData["Success"] = "Product Created successfully.";
+            return RedirectToAction("Index");
+
+        }
+
         [HttpPost("Product/Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {

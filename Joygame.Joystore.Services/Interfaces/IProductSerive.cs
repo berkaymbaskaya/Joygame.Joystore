@@ -24,6 +24,8 @@ namespace Joygame.Joystore.Services.Interfaces
         [Delete("/Product/{id}")]
         Task<HttpResponseMessage> DeleteProduct(int id);
 
+        [Post("/Product")]
+        Task<HttpResponseMessage> CreateProduct([Body] ProductCreateRequestDto request);
 
     }
 }
