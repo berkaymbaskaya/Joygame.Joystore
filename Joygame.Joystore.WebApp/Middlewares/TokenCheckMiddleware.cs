@@ -1,5 +1,6 @@
 ﻿using Joygame.Joystore.API.Models.Login;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Joygame.Joystore.WebApp.Middlewares
 {
@@ -16,8 +17,13 @@ namespace Joygame.Joystore.WebApp.Middlewares
         {
             var tokenJson = context.Session.GetString("token");
             var path = context.Request.Path.Value?.ToLower();
-
-            if (string.IsNullOrEmpty(tokenJson) && !path.StartsWith("/login"))
+            var publicPaths = new[]
+            {
+                "/login",
+                "/login/index",
+                "/login/forgotpassword"
+            };
+            if (string.IsNullOrEmpty(tokenJson) && !publicPaths.Any(p => path.StartsWith(p)))
             {
                 context.Response.Redirect("/Login");
                 return;

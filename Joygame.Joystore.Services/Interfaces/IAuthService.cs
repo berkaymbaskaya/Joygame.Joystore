@@ -1,5 +1,7 @@
 ﻿using Joygame.Joystore.API.Core;
+using Joygame.Joystore.API.Models.ForgotPassword;
 using Joygame.Joystore.API.Models.Login;
+using Joygame.Joystore.API.Models.ResetPassword;
 using Refit;
 using System;
 using System.Collections.Generic;
@@ -13,5 +15,11 @@ namespace Joygame.Joystore.Services.Interfaces
     {
         [Post("/Auth/Login")]
         Task<API.Core.ApiResponse<LoginResponseDto>> Login([Body] LoginRequestDto request);
+        [Post("/Auth/forgot-password")]
+        Task<HttpResponseMessage> ForgotPassword([Body] ForgotPasswordRequestDto request);
+
+        [Post("/Auth/reset-password")]
+        Task<HttpResponseMessage> ResetPassword([Body] ResetPasswordRequestDto request);
+
     }
 }

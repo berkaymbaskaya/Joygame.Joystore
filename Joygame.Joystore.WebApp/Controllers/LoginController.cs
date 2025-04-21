@@ -1,4 +1,5 @@
-﻿using Joygame.Joystore.API.Models.Login;
+﻿using Joygame.Joystore.API.Models.ForgotPassword;
+using Joygame.Joystore.API.Models.Login;
 using Joygame.Joystore.Services.Interfaces;
 using Joygame.Joystore.WebApp.Models.Login;
 using Microsoft.AspNetCore.Authorization;
@@ -82,8 +83,33 @@ namespace Joygame.Joystore.WebApp.Controllers
             return RedirectToAction("Index", "Login");
         }
 
+        [HttpGet("Login/ForgotPassword")]
+        public IActionResult ForgotPassword()
+        {
+            return View("ForgotPassword");
+        }
+        [HttpPost("Login/ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+            try
+            {
+                var dto = new ForgotPasswordRequestDto
+                {
+                    Email = model.Email
+                };
 
-
+                await _authService.ForgotPassword(dto);
+                TempData["Success"] = "Password reset instructions have been sent to your email.";
+                return RedirectToAction("Index");
+            }
+            catch (ApiException ex)
+            {
+                TempData["Error"] = "Email not found or service error.";
+                return View("ForgotPassword",model);
+            }
+        }
 
     }
 }

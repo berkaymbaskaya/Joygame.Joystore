@@ -13,6 +13,14 @@
         <div class="text-center mb-4">
             <img src="https://cdn.joy.ac/i/112810053/logo-joygame-116x40-w.png" alt="Joygame" style="max-height: 60px;" />
             <h3 class="mt-2">Joystore Login</h3>
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">@TempData["Success"]</div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">@TempData["Error"]</div>
+            }
         </div>
 
         <!-- Validation -->
@@ -41,6 +49,11 @@
             </div>
 
             <button type="submit" class="btn btn-primary w-100">Login</button>
+
+            <div class="mt-3">
+                <a asp-controller="Login" asp-action="ForgotPassword">Forgot your password?</a>
+            </div>
+
         </form>
     </div>
 </div>
