@@ -13,8 +13,6 @@ A secure and modular ASP.NET Core Web API developed for Joygame, implementing a 
 - Role-based Authorization
 - Serilog Logging
 - OpenAPI
-- ADO.NET (for paginated SP result handling)
-
 ---
 
 ## ⚙️ Setup Instructions
@@ -36,5 +34,10 @@ You can test all endpoints using our official Postman collection:
 
 🔗 [Download Collection](./Docs/Joystore.API.postman_collection.json)
 
+##  Test Credentials
+username:berkay
+password:berkay123
+
+## 
 Author
 Developed by Berkay Başkaya
